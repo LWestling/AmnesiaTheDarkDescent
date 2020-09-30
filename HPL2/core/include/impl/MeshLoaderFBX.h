@@ -35,137 +35,137 @@ using namespace FBXSDK_NAMESPACE;
 
 namespace hpl {
 
-	class cMesh;
-	class cNode3D;
-	class iVertexBuffer;
-	class cBone;
-	class cSkeleton;
-	class cAnimation;
-	class cAnimationTrack;
-	class cMeshLoaderMSH;
+    class cMesh;
+    class cNode3D;
+    class iVertexBuffer;
+    class cBone;
+    class cSkeleton;
+    class cAnimation;
+    class cAnimationTrack;
+    class cMeshLoaderMSH;
 
-	//------------------------------------------------------------
-	
-	class cSubMeshData
-	{
-	public:
-		iVertexBuffer* mpVtxBuffer;
-        
-		cMatrixf m_mtxGlobal;
-		cMatrixf m_mtxLocal;
-		
-		tString msName;
-		tString msMaterial;
+    //------------------------------------------------------------
 
-		tVertexBonePairVec mvVtxBonePairs;
-		
-		bool mbVisible;
-	};
+    class cSubMeshData
+    {
+    public:
+        iVertexBuffer* mpVtxBuffer;
 
-	typedef std::list<cSubMeshData> tSubMeshDataList;
-	typedef tSubMeshDataList::iterator tSubMeshDataListIt;
-	
-	//------------------------------------------------------------
-	
-	class cTakeKeyData
-	{
-	public: 
-		float mfTime;
-		float mfValue;
-	};
+        cMatrixf m_mtxGlobal;
+        cMatrixf m_mtxLocal;
 
-	typedef std::vector<cTakeKeyData> tTakeKeyDataVec;
-	typedef tTakeKeyDataVec::iterator tTakeKeyDataVecIt;
+        tString msName;
+        tString msMaterial;
 
-	//------------------------------------------------------------
-	
-	class cTempKeyFrameData
-	{
-	public: 
-		float mfTime;
-		cVector3f vTrans;
-		cVector3f vScale;
-		cVector3f vRot;
-		cQuaternion qFinalRot;
-	};
-	
-	typedef std::vector<cTempKeyFrameData> tTempKeyFrameDataVec;
-	
-	//------------------------------------------------------------
+        tVertexBonePairVec mvVtxBonePairs;
 
-	class cExtraVertrices
-	{
-	public:
-		tIntVec mvNewPoints;
-	};
+        bool mbVisible;
+    };
 
-	typedef std::vector<cExtraVertrices> tExtraVertricesVec;
-	typedef tExtraVertricesVec::iterator tExtraVertricesVecIt;
+    typedef std::list<cSubMeshData> tSubMeshDataList;
+    typedef tSubMeshDataList::iterator tSubMeshDataListIt;
 
-	//------------------------------------------------------------
+    //------------------------------------------------------------
 
-	class cExtraVtxValue
-	{
-	public:
-		cExtraVtxValue(int idx, const cVector3f& avVal) : mlIndexNum(idx), mvVal(avVal){}
+    class cTakeKeyData
+    {
+    public:
+        float mfTime;
+        float mfValue;
+    };
 
-		int mlIndexNum;
-		cVector3f mvVal;
-	};
+    typedef std::vector<cTakeKeyData> tTakeKeyDataVec;
+    typedef tTakeKeyDataVec::iterator tTakeKeyDataVecIt;
 
-	typedef std::list<cExtraVtxValue> tExtraVtxValueList;
-	typedef tExtraVtxValueList::iterator tExtraVtxValueListIt;
-	
-	//------------------------------------------------------------
-	
-	typedef std::set<float> tAnimTimeSet;
-	typedef tAnimTimeSet::iterator tAnimTimeSetIt;
+    //------------------------------------------------------------
 
-	//------------------------------------------------------------
+    class cTempKeyFrameData
+    {
+    public:
+        float mfTime;
+        cVector3f vTrans;
+        cVector3f vScale;
+        cVector3f vRot;
+        cQuaternion qFinalRot;
+    };
 
-	class cMeshLoaderFBX : public iMeshLoader
-	{
-	public:
-		cMeshLoaderFBX(iLowLevelGraphics *apLowLevelGraphics, cMeshLoaderMSH *apMeshLoaderMSH, bool abLoadAndSaveMSHFormat);
-		~cMeshLoaderFBX();
+    typedef std::vector<cTempKeyFrameData> tTempKeyFrameDataVec;
 
-		virtual cMesh* LoadMesh(const tWString& asFile, tMeshLoadFlag aFlags);
-		virtual bool SaveMesh(cMesh* apMesh,const tWString& asFile) { return false; };
+    //------------------------------------------------------------
 
-		virtual cAnimation* LoadAnimation(const tWString& asFile);
-		virtual bool SaveAnimation(cAnimation* apAnimation, const tWString& asFile) { return false; };
+    class cExtraVertrices
+    {
+    public:
+        tIntVec mvNewPoints;
+    };
 
-		//bool IsSupported(const tWString asFileType);
-	private:
-		cAnimation* LoadAnimations(KFbxScene *apScene,KFbxImporter * apImporter, const tWString& asFile, cSkeleton * apSkeleton);
-		void LoadAnimationRec(KFbxScene *apScene,KFbxNode * apNode,cAnimation* apAnimation, const tString &asAnimStackName, 
-		int alDepth,cVector3f vParentT, cVector3f vParentS, cVector3f vParentR, cSkeleton * apSkeleton);
+    typedef std::vector<cExtraVertrices> tExtraVertricesVec;
+    typedef tExtraVertricesVec::iterator tExtraVertricesVecIt;
 
-		void MakeFinalBonesRec(cBone* apBone, cMatrixf a_mtxParentGlobal, cMatrixf a_mtxParentGlobalUnscaled);
+    //------------------------------------------------------------
 
-		void LoadSkeletonRec(cBone* apBone,KFbxNode *apNode, int alDepth);
-		void LoadSceneRec(tSubMeshDataList* apSubMeshList,cSkeleton* apSkeleton, cNode3D* apHplNode,KFbxNode *apNode, int alDepth, bool animationOnly);
-		void LoadMeshData(tSubMeshDataList* apSubMeshList,cSkeleton* apSkeleton, cNode3D* apHplNode, KFbxNode *apNode, int alDepth, bool animationOnly);
+    class cExtraVtxValue
+    {
+    public:
+        cExtraVtxValue(int idx, const cVector3f& avVal) : mlIndexNum(idx), mvVal(avVal){}
 
-		cBone* LoadSkeletonData(cBone* apBone,KFbxNode *apNode, int alDepth);
+        int mlIndexNum;
+        cVector3f mvVal;
+    };
 
-		const char* GetTabs(int alDepth);
-		const char* GetAttrName(KFbxNodeAttribute::EAttributeType alNum);
-		const char* GetSkelTypeName(KFbxSkeleton::ESkeletonType alNum);
-		const char* GetRotOrderName(ERotationOrder alNum);
-		const char* GetLinkModeName(KFbxLink::ELinkMode alNum);
+    typedef std::list<cExtraVtxValue> tExtraVtxValueList;
+    typedef tExtraVtxValueList::iterator tExtraVtxValueListIt;
 
-		bool LoadScene(KFbxSdkManager* pSdkManager, KFbxDocument* pScene, const char* pFilename);
+    //------------------------------------------------------------
 
-		KFbxSdkManager* mpSdkManager;
+    typedef std::set<float> tAnimTimeSet;
+    typedef tAnimTimeSet::iterator tAnimTimeSetIt;
 
-		tString msTemp;
-		bool mbLog;
-		bool mbLowLog;
-		bool mbLoadAndSaveMSHFormat;
+    //------------------------------------------------------------
 
-		cMeshLoaderMSH * mpMeshLoaderMSH;
-	};
+    class cMeshLoaderFBX : public iMeshLoader
+    {
+    public:
+        cMeshLoaderFBX(iLowLevelGraphics *apLowLevelGraphics, cMeshLoaderMSH *apMeshLoaderMSH, bool abLoadAndSaveMSHFormat);
+        ~cMeshLoaderFBX();
+
+        virtual cMesh* LoadMesh(const tWString& asFile, tMeshLoadFlag aFlags);
+        virtual bool SaveMesh(cMesh* apMesh,const tWString& asFile) { return false; };
+
+        virtual cAnimation* LoadAnimation(const tWString& asFile);
+        virtual bool SaveAnimation(cAnimation* apAnimation, const tWString& asFile) { return false; };
+
+        //bool IsSupported(const tWString asFileType);
+    private:
+        cAnimation* LoadAnimations(FbxScene *apScene,FbxImporter * apImporter, const tWString& asFile, cSkeleton * apSkeleton);
+        void LoadAnimationRec(FbxScene *apScene,FbxNode * apNode,cAnimation* apAnimation, const tString &asAnimStackName,
+                              int alDepth,cVector3f vParentT, cVector3f vParentS, cVector3f vParentR, cSkeleton * apSkeleton);
+
+        void MakeFinalBonesRec(cBone* apBone, cMatrixf a_mtxParentGlobal, cMatrixf a_mtxParentGlobalUnscaled);
+
+        void LoadSkeletonRec(cBone* apBone,FbxNode *apNode, int alDepth);
+        void LoadSceneRec(tSubMeshDataList* apSubMeshList,cSkeleton* apSkeleton, cNode3D* apHplNode,FbxNode *apNode, int alDepth, bool animationOnly);
+        void LoadMeshData(tSubMeshDataList* apSubMeshList,cSkeleton* apSkeleton, cNode3D* apHplNode, FbxNode *apNode, int alDepth, bool animationOnly);
+
+        cBone* LoadSkeletonData(cBone* apBone,FbxNode *apNode, int alDepth);
+
+        const char* GetTabs(int alDepth);
+        const char* GetAttrName(FbxNodeAttribute::EType alNum);
+        const char* GetSkelTypeName(FbxSkeleton::EType alNum);
+        const char* GetRotOrderName(FbxRotationOrder alNum);
+        const char* GetLinkModeName(FbxCluster::ELinkMode alNum);
+
+        bool LoadScene(FbxManager* pSdkManager, FbxDocument* pScene, const char* pFilename);
+
+        FbxManager* mpSdkManager;
+
+        tString msTemp;
+        bool mbLog;
+        bool mbLowLog;
+        bool mbLoadAndSaveMSHFormat;
+
+        cMeshLoaderMSH * mpMeshLoaderMSH;
+    };
 
 };
 #endif // HPL_MESH_LOADER_FBX_H

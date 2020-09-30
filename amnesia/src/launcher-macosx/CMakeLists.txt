@@ -46,7 +46,7 @@ set_target_properties(HPL2_Minimal PROPERTIES
     COMPILE_DEFINITIONS "${compile_defs}"
 )
 target_link_libraries(HPL2_Minimal
-    z
+   z
 )
 
 SET(RESOURCE_FILES

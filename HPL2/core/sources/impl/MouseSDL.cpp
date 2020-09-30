@@ -85,7 +85,7 @@ namespace hpl {
 		mbWheelUpMoved = false;
 		mbWheelDownMoved = false;
 
-		std::list<SDL_Event>::iterator it = mpLowLevelInputSDL->mlstEvents.begin();
+		auto it = mpLowLevelInputSDL->mlstEvents.begin();
 		for(; it != mpLowLevelInputSDL->mlstEvents.end(); ++it)
 		{
 			SDL_Event *pEvent = &(*it);

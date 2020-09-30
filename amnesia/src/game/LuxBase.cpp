@@ -486,12 +486,12 @@ bool cLuxBase::Init(const tString &asCommandline)
 		SetProfile(msDefaultProfileName);
 
 		//Load user config
-		if(InitUserConfig()==false) return false;
+		if(!InitUserConfig()) return false;
 		
 		//Unlock input if not in window
-		if (mpDebugHandler->GetDebugWindowActive() == false)
+		if (!mpDebugHandler->GetDebugWindowActive())
 		{
-			if (mpConfigHandler->mbFullscreen == false)
+			if (!mpConfigHandler->mbFullscreen)
 			{
 				mpEngine->GetInput()->GetLowLevel()->LockInput(true);
 			}

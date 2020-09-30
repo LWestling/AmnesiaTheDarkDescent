@@ -17,6 +17,8 @@
  * along with Amnesia: The Dark Descent.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#define WINDOWS_IGNORE_PACKING_MISMATCH
+
 #include "impl/LowLevelInputSDL.h"
 
 #include "impl/MouseSDL.h"

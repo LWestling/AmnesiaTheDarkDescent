@@ -15,13 +15,15 @@ if(APPLE)
     endif()
 endif()
 
-# silence some annoying warnings
-add_definitions(
-    -Wno-switch
-    -Wno-reorder
-    -Wno-unused-variable
-    -Wno-unused-function
-)
+if(NOT WIN32)
+    # silence some annoying warnings
+    add_definitions(
+        -Wno-switch
+        -Wno-reorder
+        -Wno-unused-variable
+        -Wno-unused-function
+    )
+endif()
 
 add_subdirectory(../../HPL2/core core2)
 

@@ -1484,7 +1484,7 @@ float __stdcall cLuxScriptHandler::GetPlayerYSpeed()
 
 void __stdcall cLuxScriptHandler::MovePlayerForward(float afAmount)
 {
-	gpBase->mpPlayer->GetCharacterBody()->Move(eCharDir_Forward, afAmount);
+	gpBase->mpPlayer->GetCharacterBody()->Move(eCharDir_Forward, afAmount * 25.0f);
 }
 
 void __stdcall cLuxScriptHandler::SetPlayerPermaDeathSound(string& asSound)
@@ -1607,7 +1607,7 @@ void __stdcall cLuxScriptHandler::StopPlayerLookAt()
 
 void __stdcall cLuxScriptHandler::SetPlayerMoveSpeedMul(float afMul)
 {
-	gpBase->mpPlayer->SetScriptMoveSpeedMul(afMul);
+	gpBase->mpPlayer->SetScriptMoveSpeedMul(afMul * 7.0f);
 }
 
 void __stdcall cLuxScriptHandler::SetPlayerRunSpeedMul(float afMul)

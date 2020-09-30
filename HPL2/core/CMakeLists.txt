@@ -1,11 +1,12 @@
 cmake_minimum_required (VERSION 2.8.11)
 project(HPL2)
 
+set(HPL2_VERSION_MAJOR 2)
+set(HPL2_VERSION_MINOR 0)
+
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(BoilerPlate)
 
-set(HPL2_VERSION_MAJOR 2)
-set(HPL2_VERSION_MINOR 0)
 if(IS_APPLE_64)
     set(BIN_LIBROOT "${PLATFORM_PREFIX}64")
 else()
@@ -36,6 +37,11 @@ IF(APPLE)
 ELSEIF(LINUX)
     SET(PRIVATE_LIB_SUFFIX "lib/linux")
     SET(PRIVATE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies CACHE PATH "")
+ELSEIF(WIN32)
+    SET(PRIVATE_LIB_SUFFIX "lib/win32")
+    SET(PRIVATE_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../dependencies CACHE PATH "")
+ELSE()
+    MESSAGE(FATAL_ERROR "No platform found")
 ENDIF()
 
 OPTION(USE_SDL2 "Use SDL2 instead of SDL1.2" ON)
@@ -171,6 +177,15 @@ ELSEIF(LINUX)
         sources/impl/PlatformUnix.cpp
         sources/impl/PlatformSDL.cpp
     )
+ELSEIF(WIN32)
+    LIST(APPEND impl_sources
+            sources/impl/PlatformWin32.cpp
+            sources/impl/ThreadWin32.cpp
+            sources/impl/MutexWin32.cpp
+            )
+
+ #   set(CMAKE_CXX_FLAGS_RELEASE "/MD")
+ #   set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi")
 ENDIF()
 
 # Setup buildID source
@@ -179,6 +194,8 @@ IF(APPLE)
     SET(BUILDID_SUFFIX MacOSX)
 ELSEIF(LINUX)
     SET(BUILDID_SUFFIX Linux)
+ELSEIF(WIN32)
+    SET(BUILDID_SUFFIX Win32)
 ELSE()
     message(FATAL_ERROR "Unknown platform")
 ENDIF()
@@ -237,12 +254,25 @@ source_group("Platform" REGULAR_EXPRESSION "\\/impl\\/Platform.+")
 
 # setup libs
 
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 FindPrebuiltLibrary(NEWTON_LIBRARY Newton)
 FindPrebuiltLibrary(ANGELSCRIPT_LIBRARY angelscript)
-FindPrebuiltLibrary(FBX_LIBRARY fbxsdk-2012.2-static)
-FindPrebuiltLibrary(GLEW_LIBRARY GLEW)
-FindPrebuiltLibrary(THEORA_LIBRARY theora)
-FindPrebuiltLibrary(DEVIL_LIBRARY IL)
+
+if(NOT WIN32)
+    FindPrebuiltLibrary(GLEW_LIBRARY GLEW)
+    FindPrebuiltLibrary(THEORA_LIBRARY theora)
+    FindPrebuiltLibrary(DEVIL_LIBRARY IL)
+    FindPrebuiltLibrary(FBX_LIBRARY fbxsdk-2012.2-static)
+    SET(ZIP_LIBRARY z)
+else()
+    FindPrebuiltLibrary(GLEW_LIBRARY GLEW32)
+    FindPrebuiltLibrary(THEORA_LIBRARY libtheora)
+    FindPrebuiltLibrary(DEVIL_LIBRARY DevIL)
+    FindPrebuiltLibrary(FBX_LIBRARY libfbxsdk-md)
+    FindPrebuiltLibrary(ZIP_LIBRARY zlibwapi)
+endif()
 
 find_package(OpenGL)
 mark_as_advanced(NEWTON_LIBRARY ANGELSCRIPT_LIBRARY FBX_LIBRARY GLEW_LIBRARY THEORA_LIBRARY DEVIL_LIBRARY)
@@ -278,6 +308,20 @@ elseif(APPLE)
         iconv ${SC_LIBRARY}
         ${COCOA_LIBRARY}
     )
+elseif(WIN32)
+    FindPrebuiltLibrary(CG_LIBRARY cg)
+    FindPrebuiltLibrary(CGGL_LIBRARY cgGL)
+    FindPrebuiltLibrary(TASKKEYHOOK_LIBRARY TaskKeyHook)
+    FindPrebuiltLibrary(ZLIB_LIBRARY zlib-md)
+    FindPrebuiltLibrary(XML_LIBRARY libxml2-mt)
+
+    set(PLATFORM_LIBS
+        ${CG_LIBRARY}
+        ${CGGL_LIBRARY}
+        ${XML_LIBRARY}
+        ${TASKKEYHOOK_LIBRARY}
+        ${ZLIB_LIBRARY}
+    )
 endif()
 
 target_link_libraries(HPL2
@@ -288,8 +332,8 @@ target_link_libraries(HPL2
     ${GLEW_LIBRARY}
     ${THEORA_LIBRARY}
     ${DEVIL_LIBRARY}
-    z
     ${FBX_LIBRARY}
+    ${ZIP_LIBRARY}
     ${PLATFORM_LIBS}
 )
 

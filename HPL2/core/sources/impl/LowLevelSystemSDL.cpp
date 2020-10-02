@@ -21,7 +21,6 @@
 //Use this to check for memory leaks!
 
 #ifdef WIN32
-#pragma comment(lib, "angelscript.lib")
 #define UNICODE
 #include <windows.h>
 #include <shlobj.h>
@@ -70,7 +69,13 @@ extern int hplMain(const hpl::tString &asCommandLine);
 #include <windows.h>
 int WINAPI WinMain(	HINSTANCE hInstance,  HINSTANCE hPrevInstance,LPSTR	lpCmdLine, int nCmdShow)
 {
-	return hplMain(lpCmdLine);
+    std::string cmdLine = lpCmdLine;
+    int firstChar = cmdLine.find_first_not_of(' ');
+    int lastChar = cmdLine.find_last_not_of(' ');
+    if (firstChar != -1 && lastChar != -1) {
+        cmdLine = cmdLine.substr(firstChar, lastChar - firstChar + 1);
+    }
+	return hplMain(cmdLine);
 }
 #else
 int main(int argc, char *argv[])
@@ -448,7 +453,7 @@ namespace hpl {
 	
 	iScript* cLowLevelSystemSDL::CreateScript(const tString& asName)
 	{
-		return hplNew( cSqScript, (asName,mpScriptEngine,mpScriptOutput,mlHandleCount++) );
+		return hplNew(cSqScript, (asName,mpScriptEngine,mpScriptOutput,mlHandleCount++) );
 	}
 
 	//-----------------------------------------------------------------------

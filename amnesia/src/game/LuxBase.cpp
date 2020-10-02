@@ -706,7 +706,7 @@ bool cLuxBase::InitApp()
 	cConfigFile *pInitCfg = hplNew(cConfigFile, (msInitConfigFile ));
 #endif
 	if(pInitCfg->Load()==false){
-		msErrorMessage =_W("Could not load main init file: ")+msInitConfigFile;
+		msErrorMessage =_W("Could not load main init file: '")+msInitConfigFile+_W("'");
 		return false;
 	}
 	
@@ -952,7 +952,7 @@ bool cLuxBase::InitMainConfig()
 	/////////////////////////////////////////////////
 	// Load the main settings
 	mpMainConfig = LoadConfigFile(msDefaultMainConfigPath, msBaseSavePath + _W("main_settings.cfg"),false);
-	if(mpMainConfig==NULL) return false;
+	if(mpMainConfig==nullptr) return false;
 
 	//Load some basic variables
 	mbSaveConfigAtExit = mpMainConfig->GetBool("Main","SaveConfig",true);

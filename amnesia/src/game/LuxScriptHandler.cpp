@@ -1484,7 +1484,7 @@ float __stdcall cLuxScriptHandler::GetPlayerYSpeed()
 
 void __stdcall cLuxScriptHandler::MovePlayerForward(float afAmount)
 {
-	gpBase->mpPlayer->GetCharacterBody()->Move(eCharDir_Forward, afAmount * 25.0f);
+	gpBase->mpPlayer->GetCharacterBody()->Move(eCharDir_Forward, afAmount * 1.5f);
 }
 
 void __stdcall cLuxScriptHandler::SetPlayerPermaDeathSound(string& asSound)
@@ -2055,7 +2055,17 @@ void __stdcall cLuxScriptHandler::PlaySoundAtEntity(string& asSoundName, string&
 		cLuxMap *pMap = gpBase->mpMapHandler->GetCurrentMap();
 		if(pMap==NULL) return;
 
-		cSoundEntity *pSound= pMap->GetWorld()->CreateSoundEntity(asSoundName, asSoundFile,bRemoveWhenOver);
+		int i = rand();
+        if (i % 50 == 0) {
+		    i = rand();
+		    if (i % 20 == 0) {
+                pMap->CreateEntity("EnemyBrute", "servant_brute", pEntity->GetAttachEntity()->GetWorldMatrix(), 1);
+		    } else {
+                pMap->CreateEntity("EnemyGrunt", "servant_grunt", pEntity->GetAttachEntity()->GetWorldMatrix(), 1);
+		    }
+        }
+
+        cSoundEntity *pSound= pMap->GetWorld()->CreateSoundEntity(asSoundName, asSoundFile,bRemoveWhenOver);
 		if(pSound)
 		{
 			if(abSaveSound==false)
@@ -2066,7 +2076,7 @@ void __stdcall cLuxScriptHandler::PlaySoundAtEntity(string& asSoundName, string&
 			{
 				pSound->SetPosition(pEntity->GetAttachEntity()->GetWorldPosition());
 			}
-			
+
 			pSound->SetIsSaved(abSaveSound);
 			if(afFadeTime >0) pSound->FadeIn(fFadeSpeed);
 		}

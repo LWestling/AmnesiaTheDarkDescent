@@ -9,6 +9,8 @@ set(MACOSX_BUNDLE_COPYRIGHT "Copyright © 2010-2013 Frictional Games")
 
 OPTION(IS_APPLE_64 "Apple build in 64 bits" OFF)
 
+set (CMAKE_CXX_STANDARD 17)
+
 if(APPLE)
     if(NOT IS_APPLE_64)
         set(CMAKE_OSX_ARCHITECTURES "i386")

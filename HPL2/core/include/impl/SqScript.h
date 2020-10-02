@@ -39,7 +39,7 @@ namespace hpl {
 		void AddArg(const tString& asArg);
 
 		bool Run(const tString& asFuncLine);
-		bool Run(int alHandle);
+		bool Run(asIScriptFunction* func);
 
 	private:
 		asIScriptEngine *mpScriptEngine;

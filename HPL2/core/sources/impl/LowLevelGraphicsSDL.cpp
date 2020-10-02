@@ -219,14 +219,13 @@ namespace hpl {
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
         unsigned int mlFlags = SDL_WINDOW_OPENGL;
-        mvScreenSize = cVector2l(800,600);
-        /*
+
         if (alWidth == 0 && alHeight == 0) {
             mvScreenSize = cVector2l(800,600);
             mlFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
         } else if (abFullscreen) {
             mlFlags |= SDL_WINDOW_FULLSCREEN;
-        } */
+        }
 
 
         Log(" Setting video mode: %d x %d - %d bpp\n",alWidth, alHeight, alBpp);

@@ -758,7 +758,7 @@ void cLuxPlayer::Run(bool abPressed)
 
 void cLuxPlayer::Jump(bool abPressed)
 {
-	if(abPressed && (mbJumpDisabled || mpInsanityCollapse->IsActive()) ) return;
+	if(!abPressed) return;
 
 	mbPressingJump = abPressed;
 	if(mvStates[mState]->OnJump(abPressed))
@@ -769,7 +769,7 @@ void cLuxPlayer::Jump(bool abPressed)
 
 void cLuxPlayer::Crouch(bool abPressed)
 {
-	if(abPressed && (mbCrouchDisabled || mpInsanityCollapse->IsActive()) ) return;
+	if(!abPressed && (mbCrouchDisabled || mpInsanityCollapse->IsActive()) ) return;
 
 	if(mvStates[mState]->OnCrouch(abPressed))
 	{

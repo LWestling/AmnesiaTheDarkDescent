@@ -20,6 +20,7 @@
 #ifndef HPL_SCRIPT_H
 #define HPL_SCRIPT_H
 
+#include <angelscript.h>
 #include "resources/ResourceBase.h"
 
 #ifdef __GNUC__
@@ -55,7 +56,7 @@ namespace hpl {
 		 */
 		virtual bool Run(const tString& asFuncLine)=0;
 		
-		virtual bool Run(int alHandle)=0;
+		virtual bool Run(asIScriptFunction* func)=0;
 	};
 };
 #endif // HPL_SCRIPT_H

@@ -22,6 +22,25 @@ function(FindPrebuiltLibrary result_var libname)
     endif()
 endfunction()
 
+function(FindPrebuiltLibraryRelease result_var libname)
+    if(NOT PREBUILT_PLATFORM_ROOT)
+        message(FATAL_ERROR "Must set PREBUILT_PLATFORM_ROOT before using this function")
+    endif()
+
+    MESSAGE(${PREBUILT_PLATFORM_ROOT})
+    # check prebuilt directory first
+    find_library(${result_var}
+            NAMES ${libname}
+            PATHS ${PREBUILT_PLATFORM_ROOT}/release/ ${PREBUILT_PLATFORM_ROOT}
+            NO_DEFAULT_PATH)
+    # Check system dir
+    find_library(${result_var}
+            NAMES ${libname})
+    if(NOT ${result_var})
+        message(FATAL_ERROR "Could not find library ${libname} in prebuilt folder ${PREBUILT_PLATFORM_ROOT}")
+    endif()
+endfunction()
+
 # Helper to ensures a scope has been set for certain target properties
 macro(_SetDefaultScope var_name default_scope)
     list(GET ${var_name} 0 __setdefaultscope_temp)
